@@ -22,7 +22,8 @@ public function register(
     Request $request,
     UserPasswordHasherInterface $passwordHasher,
     EntityManagerInterface $em,
-    MailerInterface $mailer
+    MailerInterface $mailer,
+    string $defaultSender = '%env(MAILER_SENDER)%'
 ): JsonResponse {
     $data = json_decode($request->getContent(), true);
 
@@ -58,7 +59,7 @@ public function register(
     $user->setVerificationCode($verificationCode);
 
     $emailMessage = (new Email())
-        ->from('tech@selekta.cc')
+        ->from($defaultSender)
         ->to($email)
         ->subject('Please verify your email address')
         ->html("<p>Your verification code is: <strong>{$verificationCode}</strong></p>");
